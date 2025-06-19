@@ -1,0 +1,411 @@
+@startuml
+
+package "Interfaz Lógica"{
+
+    class BombermanControlador{
+        # nivel: Nivel
+        # pantalla: Pantalla
+        # juegoIG: JuegoIG
+        # movimientoJugador: Keyboard
+        + elemento: ElementoDeNivel[]
+        + personaje: List<Personaje>
+        + bombas: List<Bomba>
+        + mensajes: List<Mensaje>
+        + pantallaAMostrar: int
+        + tiempo: int
+        + puntaje: int
+        + vida: int
+
+        + empezarNuevoJuego()
+        - reiniciarEstadisticas()
+        + cambiarNivel(int level)
+        + isPowerUpUsed (int x, int y, int level)
+
+    }
+
+    class Bomberman{
+    }
+
+    abstract class PowerUp{
+    }
+
+    abstract class Enemigo{
+        # puntos: int
+        # velocidad: double
+        # ia: IA
+        # PASOSMAXIMOS: int
+        # REST: double
+        # pasos: double
+        # animacionFinal: int
+        # spriteMuerte: Sprite
+        + colisionar(Entity e)
+    }
+
+    class DirecciónExplosión{
+        # bombermanInterfazLogica: BombermanControlador
+        # direccion: int
+        - radio: int
+        # xOrigin: int
+        # yOrigin: int
+        # explosiones: Explosion[]
+
+        - crearExplosion()
+        - calculatePermittedDistance()
+        - explotarEn()
+    }
+
+    class Contenedor {
+    + chocar(): boolean
+    + actualizar()
+    + renderizar()
+    }
+
+    class ParedBloque{
+
+    }
+
+    class PortalBloque{
+    + chocarElementoDeNivel
+    }
+
+    class Céspedbloque{
+    + chocarElementoDeNivel
+    }
+
+    class LadrilloBloque{
+    + actualizar()
+    + renderizar(Pantalla)
+    + chocarElementoDeNivel
+    - MAX_ANIMATE: int
+    - _animate: int
+    # destruido: boolean
+    # _timeToDisapear: int
+    # _belowSprite: Sprite
+    + actualizar()
+    + estaDestruido()
+    + destruir()
+    + chocar()
+    + addBelowSprite()
+    }
+
+    abstract class ElementoDeNivel{
+        # posicionEnX: double
+        # posicionEnY: double
+        # remover: boolean
+        # sprite: Sprite
+        + remover()
+        + estaRemovido()
+        + chocarElementoDeNivel
+    }
+
+    abstract class EntidadAnimada{
+        # animado: int
+        # MAX_ANIMADO: int
+
+        # animar()
+    }
+
+    abstract class Nivel{
+        # ancho: int
+        # alto: int
+        # nivel: int
+        # bombermanInterfazLogica: BombermanControlador
+        + crearElementos()
+    }
+
+    abstract class Personaje{
+        # bombermanInterfazLogica: BombermanControlador
+        # direccion: int
+        # sigueVivo: boolean
+        # moviendose: boolean
+        + tiempoDespues: int
+
+        # calcularMovimiento()
+        # mover(double xa, double ya)
+        + matar()
+        # sePuedeMover(double x, double y)
+    }
+
+    class Jugador {
+        - bombas: List<Bomba>
+        # movimientoJugador: Keyboard
+        # tiempoParaColocarBombas: int
+        + powerUps: List<PowerUp>
+        # colocarBomba()
+
+    }
+
+    abstract class PowerUp{
+    }
+
+    class Bomba{
+        # tiempoParaExplotar: double
+        # tiempoDespues: int
+        # bombermanInterfazLogica: BombermanControlador
+        # permitidoPasar: boolean
+        # explosiones: DirecciónExplosión[]
+        # explotado: boolean
+        + isExploded()
+        + explotarEn(int x, int y)
+        + updateExplosions()
+        + renderExplosions(Pantalla pantalla)
+        + AGREGARUNPARAMETRODELELEMENTODENIVEL
+    }
+
+    class Explosión{
+        # last: boolean
+        # bombermanInterfazLogica: BombermanControlador
+        # sprite: Sprite
+
+    }
+
+    abstract class IA {
+    }
+
+    class SnowMan {
+        + lanzarRoca()
+    }
+
+    class Todora {
+        + aumentarVelocidad()
+        + detectar()
+    }
+
+    class HawkMan {
+    }
+
+    class Trent {
+        + detectar()
+    }
+
+    class BusterSlime{
+        + aumentarVelocidad()
+    }
+
+    class LizardMan{
+    }
+
+    class BombasExtra {
+        + incrementarCantidadBomba()
+    }
+
+    class ExplosiónExpandida {
+        + aumentarAlcanceExplosión()
+    }
+
+    class Acelerador {
+        + aumentarVelocidad()
+    }
+
+}
+
+
+
+package "Interfaz Gráfica"{
+
+    class BombermanInterfazGráfica{
+    + panelJuego
+    - separadorPanel
+    - PanelDeInformación
+    - JuegoIG
+    + newGame()
+    + changeLevel()
+    + pauseGame()
+    + resumeGame()
+    + isRunning()
+    + setTiempo()
+    + setVida()
+    + setPuntaje()
+    + validCode()
+    + changeLevelByCode()
+    }
+
+    interface MiNivel{
+            + cargarNivel(String path)
+        }
+
+    class Coordenada{
+            + tileToPixel(double i)
+            + pixelToTile(double i)
+        }
+
+
+    class Pantalla{
+    # ancho: int
+    # altura: int
+    + nuevosPixels: int
+    - colorTransparente: int
+    + xOffset: int
+    + limpiar()
+    + generarImagenDeEntidad()
+    + renderEntityWithBelowSprite()
+    + establecerOffset()
+    + calcularXOffset()
+    + dibujarPantallaDeFinDeJuego()
+    + dibujarCambioDeNivel()
+    + dibujarPantallaDePausa()
+    + dibujarCadenaCentrada()
+    + obtenerAncho()
+    + obtenerAltura()
+    + obtenerAnchoReal()
+    + obtenerAlturaReal()
+    }
+
+    class PanelDeInformacion{
+    - etiquetaTiempo
+    - etiquetaPuntos
+    - livesLabel
+    + setTiempo()
+    + setVida()
+    + setPuntaje()
+    }
+
+    interface Renderización{
+        + actualizar()
+        + renderizar(Pantalla)
+    }
+
+    class PanelDeJuego{
+    - BombermanInterfazGráfico
+    + getGame()
+    }
+
+    class Keyboard{
+    - tecla: boolean
+    + actualizar()
+    + keyTyped()
+    + keyPressed()
+    + keyReleased()
+    }
+
+    class JuegoIG{
+    - CANTIDAD_BOMBA: int
+    - RADIO_BOMBA: int
+    - VELOCIDAD_JUGADOR: double
+    + TAMAÑO_CUADRADO: int
+    + ESCALA: int
+    + TAMAÑO_DE_BALDOSA: int
+    + BALDOSA_POR_COLUMNA: int
+    + BALDOSA_POR_FILA: int
+    + ANCHO_PANTALLA: int
+    + ALTURA_PANTALLA: int
+    + FPS: int
+    + TIEMPO: int
+    + PUNTAJE: int
+    + VIDA: int
+    + cantidadBomba: int
+    + radioBomba: int
+    + velocidadJugador: double
+    - BombermanInterfazGráfico
+    - Keyboard
+    - Pantalla
+    - BombermanControlador
+    - correrJuego: boolean
+    - pausarJuego: boolean
+    # RETRASO_DE_PANTALLA: int
+    # retrasoDePantalla: int
+    - BufferedImage
+    - pixels: int
+    + renderizarJuego()
+    + renderScreen()
+    + actualizar()
+    + start()
+    + empezarHiloDeJuego()
+    + pausarJuegoBomberman()
+    + getPlayerSpeed()
+    + getBombRate()
+    + getBombRadius()
+    + addPlayerSpeed()
+    + addBombRadius()
+    + addBombRate()
+    + getScreenDelay()
+    + decreaseScreenDelay()
+    + reiniciarDeLay()
+    + getInput()
+    + getBombermanInterfazLogica()
+    + run()
+    + estaCorriendo()
+    + estaPausado()
+    + pausar()
+    }
+
+    class Sprite{
+    + tamaño: int
+    - posicionEnX: int
+    - posicionEnY: int
+    + nuevoPixel: int
+    # anchoReal: int
+    # alturaReal: int
+    - spriteSheet
+    - setColor()
+    - load()
+    + moverSprite()
+    + getSize()
+    + getPixel()
+    + obtenerAlturaReal()
+    + obtenerAnchoReal()
+    - elegirSprite()
+    # movingSprite()
+    }
+
+    class SpriteSheet{
+    - ruta: String
+    + tamaño: int
+    + nuevosPixels: int
+    - load()
+    }
+
+}
+
+Bomberman --> BombermanControlador
+BombermanControlador -d-> ElementoDeNivel
+EntidadAnimada -u-|> ElementoDeNivel
+Personaje -u-|> EntidadAnimada
+Enemigo -u-|> Personaje
+Contenedor -l-|> ElementoDeNivel
+PowerUp -l-|> Contenedor
+Nivel -d->"*" ElementoDeNivel
+Nivel -r-> Bomba
+Jugador -l-|> Personaje
+Jugador -r->"*" PowerUp
+Jugador -d->"1-3" Bomba
+Bomba -d-> Explosión
+Bomba -l-|> EntidadAnimada
+Bomba --> DirecciónExplosión
+LadrilloBloque --|> Contenedor
+PortalBloque --|> Contenedor
+Céspedbloque --|> Contenedor
+ParedBloque --|> Contenedor
+
+
+SnowMan -u-|> Enemigo
+Todora -u-|> Enemigo
+HawkMan -u-|> Enemigo
+Trent -u-|> Enemigo
+BusterSlime -u-|> Enemigo
+LizardMan -u-|> Enemigo
+
+BombasExtra --|> PowerUp
+ExplosiónExpandida --|> PowerUp
+Acelerador --|> PowerUp
+
+
+Bomberman <.r. BombermanInterfazGráfica
+MiNivel ..>Bomberman
+JuegoIG --> Coordenada
+BombermanInterfazGráfica -d-> JuegoIG
+JuegoIG -d-> Pantalla
+BombermanInterfazGráfica -d-> PanelDeJuego
+PanelDeJuego -d-> PanelDeInformacion
+JuegoIG -d-> Keyboard
+Pantalla .d.|> Renderización
+ElementoDeNivel ..|> Renderización
+Pantalla --d>"*" Sprite
+SpriteSheet-u-|> Sprite
+
+ElementoDeNivel --> Sprite
+DirecciónExplosión --> Explosión
+Enemigo --> IA
+BombermanControlador  -->"*" Nivel
+
+@enduml
